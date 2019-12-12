@@ -13,20 +13,28 @@ import java.io.IOException;
 
 public class Game {
     public static void main(String[] args) throws IOException, InterruptedException {
-            
+        
         Terminal terminal = new DefaultTerminalFactory().createTerminal();
-        Screen screen = new TerminalScreen(terminal);
-        screen.startScreen();
+        Screen stdscr = new TerminalScreen(terminal);
+        stdscr.startScreen();
 
-        TextGraphics graphics = screen.newTextGraphics();
+        TextGraphics graphics = stdscr.newTextGraphics();
+        String screen_image = "";  // What is to be displayed on the screen
 
-        TerminalSize terminal_size = new TerminalSize(2, 2);
-        TextCharacter text_character = new TextCharacter('#');
-        BasicTextImage image = new BasicTextImage(terminal_size, text_character);
+        for (int f = 0; f < 500; f++) {
+            // main loop
 
-        graphics.drawImage(new TerminalPosition(0, 0), image);
-        screen.refresh();
+            // update virtual screen
+            screen_image = Integer.toString(f);
 
-        Thread.sleep(5000);
+            // update real screen
+            stdscr.clear();
+            graphics.putString(new TerminalPosition(0, 0), screen_image);
+            stdscr.refresh();
+
+            Thread.sleep(10);
+        }
+
+        stdscr.close();
     }
 }
