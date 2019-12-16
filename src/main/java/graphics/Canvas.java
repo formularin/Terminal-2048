@@ -1,6 +1,13 @@
 package graphics;
 
+import graphics.Image;
+
+
 public class Canvas {
+    /*
+    A grid of chars to be printed onto the screen for each frame.
+    */
+
     public int rows;
     public int columns;
     public String[][] grid;

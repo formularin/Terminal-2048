@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 import graphics.Canvas;
+import graphics.Image;
 
 
 public class Game {
@@ -33,39 +34,36 @@ public class Game {
         TextGraphics graphics = stdscr.newTextGraphics();
         
         Canvas canvas = new Canvas(10, 10);
+        Image octothorpe = new Image("#", canvas, 0, 0);
 
-        for (int r = 0; r < canvas.rows; r++) {
-            for (int c = 0; c < canvas.columns; c++) {
-                // update virtual screen
-
-                // replace previous "#" with " "
-                if (c == 0) {
-                    if (r != 0) {
-                        canvas.replace(r - 1, canvas.columns - 1, " ");
-                    }
-                } else {
-                    canvas.replace(r, c - 1, " ");
-                }
-
-                // place new "#"
-                canvas.replace(r, c, "#");
-
-                // update real screen
-                stdscr.clear();
-                String[] canvas_rows = canvas.get_rows();
-                for ( int i = 0; i < canvas.grid.length; i++) {
-                    graphics.putString(new TerminalPosition(0, i), canvas_rows[i]);
-                }
-                stdscr.refresh();
-
-                Thread.sleep(100);
+        for (int f = 0; f < (canvas.rows * canvas.columns); f++) {
+            // update virtual screen
+            if ((f + 1) % 10 == 0 && f != 0) {
+                octothorpe.move(new int[] {-9, 1});
+            } else {
+                octothorpe.move(new int[] {1, 0});
             }
+            octothorpe.render();
+
+            // update real screen
+            stdscr.clear();
+            String[] canvas_rows = canvas.get_rows();
+            for ( int i = 0; i < canvas.grid.length; i++) {
+                graphics.putString(new TerminalPosition(0, i), canvas_rows[i]);
+            }
+            stdscr.refresh();
+
+            Thread.sleep(100);
         }
 
         stdscr.close();
     }
 
     private static Logger createLoggger() throws IOException {
+        /*
+        Creates a Logger and has it write to terminal-2048.log, but not to console.
+        */
+
         FileHandler handler = new FileHandler("terminal-2048.log", true);
         Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
         logger.addHandler(handler);
