@@ -2,3 +2,4 @@
 Test.class
 Test.java
 **/*.class
+src/main/java/terminal-2048.log
