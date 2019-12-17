@@ -1,3 +1,5 @@
+package terminal2048;
+
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
@@ -15,8 +17,8 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-import graphics.Canvas;
-import graphics.Image;
+import terminal2048.graphics.Canvas;
+import terminal2048.graphics.Image;
 
 
 public class Game {

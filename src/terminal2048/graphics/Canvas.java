@@ -1,6 +1,6 @@
-package graphics;
+package terminal2048.graphics;
 
-import graphics.Image;
+import terminal2048.graphics.Image;
 
 
 public class Canvas {

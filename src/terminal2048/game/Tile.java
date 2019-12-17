@@ -1,12 +1,12 @@
-package game;
+package terminal2048.game;
 
 import java.util.Random;
 
 import com.googlecode.lanterna.screen.TerminalScreen;
 
-import graphics.Image;
-import graphics.Canvas;
-import game.Board;
+import terminal2048.graphics.Image;
+import terminal2048.graphics.Canvas;
+import terminal2048.game.Board;
 
 
 public class Tile {
@@ -17,27 +17,29 @@ public class Tile {
     */
 
     public Image image;
-    int[] startingTiles = {2, 4};
-    int valueIndex = new Random().nextInt(startingTiles.length);
-    int value = startingTiles[valueIndex];
+
+    int value;  // the number on the tile
     
     // to be changed by external forces
     public int x;
     public int y;
 
+    public static String createAsciiArt(int num) {
+        return String.format(" ___________ \n|           |\n|     %d     |\n|           |\n|___________|", num);
+    }
 
     public Tile(Canvas cv, int col, int row, Board bd) {
         x = col;
         y = row;
 
+        int[] startingTiles = {2, 4};
+        int valueIndex = new Random().nextInt(startingTiles.length);
+        value = startingTiles[valueIndex];
+
         int[] canvasCoordArray = canvasCoords();
         int canvasX = canvasCoordArray[0];
         int canvasY = canvasCoordArray[1];
         image = new Image(createAsciiArt(value), cv, canvasX, canvasY);
-    }
-
-    public static String createAsciiArt(int num) {
-        return String.format(" ___________ \n|           |\n|     %d     |\n|           |\n|___________|", num);
     }
 
     private int[] canvasCoords() {
@@ -54,7 +56,7 @@ public class Tile {
         To be run repeatedly when the tile has to move on the board - creates sliding effect.
         */
 
-        int[] vector = new int[2];
+        int[] vector = {0, 0};
 
         if (direction == "right") {
             vector[0] = 1;

@@ -1,6 +1,6 @@
-package graphics;
+package terminal2048.graphics;
 
-import graphics.Canvas;
+import terminal2048.graphics.Canvas;
 
 import java.util.*;
 
