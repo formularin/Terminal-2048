@@ -1,5 +1,6 @@
 .DS_Store
-Test.class
 Test.java
+test
 **/*.class
 src/main/java/terminal-2048.log
+board
