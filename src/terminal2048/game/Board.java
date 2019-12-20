@@ -73,14 +73,7 @@ public class Board {
         }
 
         // if none in a row are equal
-        Boolean noneInARow = true
-        for ( int t = 0; t < 3; t++ ) {
-            if (tileRow[t].value == tileRow[t + 1]) {
-                noneInARow = false;
-            }
-        }
-        if (noneInARow) {
-            newTileRow = tileRow;
+        private static void noneInARowFunc() {
             if (direction == "forward") {
                 for ( int i = 3; i > -1; i-- ) {
                     if (newTileRow[i] != null) {
@@ -102,6 +95,17 @@ public class Board {
                     }
                 }
             }
+        }
+
+        Boolean noneInARow = true;
+        for ( int t = 0; t < 3; t++ ) {
+            if (tileRow[t].value == tileRow[t + 1]) {
+                noneInARow = false;
+            }
+        }
+        if (noneInARow) {
+            newTileRow = tileRow;
+            noneInARowFunc();
         }
 
         private static void twoInARow(int tile1, int tile2) {
@@ -132,17 +136,15 @@ public class Board {
                     newTileRow[tile1] = new Tile(canvas, coordRow, tile1, newValue);
                 }
             }
-
-            
-            
+            noneInARowFunc();
         }
 
         // if 2 in a row are equal
         for ( int t = 0; t < 3; t++ ) {
             if (tileRow[t] != null) {
-                if ( tileRow[t].value == tileRow[t + 1] ) {
+                if ( tileRow[t].value == tileRow[t + 1].value ) {
                     try {
-                        if (tileRow[t + 2] != tileRow) {
+                        if (tileRow[t + 2].value != tileRow.value) {
                             twoInARow();
                         }
                     } catch (java.lang.ArrayIndexOutOfBoundsException) {
@@ -153,6 +155,47 @@ public class Board {
         }
 
         // if 3 in a row are equal
+        private static void threeInARow(int firstIndex) {
+            newTileRow = tileRow;
+            int ogValue = newTileRow[firstIndex];
+            int newValue = ogValue * 2;
+            
+            if (direction == "forward") {
+                newTileRow[firstIndex] = null;
+                if (typeRow == "horizontal") {
+                    newTileRow[firstIndex + 2] = new Tile(canvas, firstIndex + 2, coordRow, newValue);
+                    newTileRow[firstIndex + 1] = new Tile(canvas, firstIndex + 1, coordRow, ogValue);
+                } else if (typeRow == "vertical") {
+                    newTileRow[firstIndex + 2] = new Tile(canvas, coordRow, firstIndex + 2, newValue);
+                    newTileRow[firstIndex + 1] = new Tile(canvas, coordRow, firstIndex + 1, ogValue);
+                }
+            } else if (directino == "backward") {
+                newTileRow[firstIndex + 2] = null;
+                if (typeRow == "horizontal") {
+                    newTileRow[firstIndex] = new Tile(canvas, firstIndex, coordRow, newValue);
+                    newTileRow[firstIndex + 1] = new Tile(canvas, firstIndex + 1, coordRow, ogValue);
+                } else if (typeRow == "vertical") {
+                    newTileRow[firstIndex] = new Tile(canvas, coordRow, firstIndex, newValue);
+                    newTileRow[firstIndex + 1] = new Tile(canvas, coordRow, firstIndex + 1, ogValue);
+                }
+            }
+            noneInARowFunc();
+        }
+
+        for ( int t = 0; t < 2; t++ ) {
+            if (tileRow[t] != null) {
+                if (tileRow[t].value == tileRow[t + 1].value == tileRow[t + 2].value) {
+                    try {
+                        if (tileRow[t + 3].value != tileRow[1].value) {
+                            threeInARow(t);
+                        }
+                    } catch (java.lang.ArrayIndexOutOfBoundsException) {
+                        threeInARow(t);
+                    }
+                }
+            }
+        }
+
         return newTileRow;
     }
 
@@ -188,14 +231,12 @@ public class Board {
          - if 3 in a row are same and move is in direction of line, last two are merged
 
         how ill do it:
-         - recursive function to create chains of mergeable tiles
-         - narrow down into groups of two by length (3 in a row means last two merge, 4 in a row means ones next to each other merge)
+         - run mergeRow() on each row (or column).
          - add new tile
+         - calculate where each tile has to go and move them all one place at a time each frame
         */
 
         // calculate new locations of every tile on board
-        if (direction == "right") {
-            Tile[][] rows = Tile[4][4];
-        }
+        
     }
 }
