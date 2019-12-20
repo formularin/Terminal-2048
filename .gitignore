@@ -2,5 +2,7 @@
 Test.java
 test
 **/*.class
-src/main/java/terminal-2048.log
+src/terminal2048/terminal-2048.log
+src/terminal-2048.log
 board
+src/Test.java

@@ -1,6 +1,6 @@
 package terminal2048.game;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.googlecode.lanterna.screen.TerminalScreen;
 
@@ -18,7 +18,7 @@ public class Tile {
 
     public Image image;
 
-    int value;  // the number on the tile
+    public int value;  // the number on the tile
     
     // to be changed by external forces
     public int x;
@@ -28,13 +28,17 @@ public class Tile {
         return String.format(" ___________ \n|           |\n|     %d     |\n|           |\n|___________|", num);
     }
 
-    public Tile(Canvas cv, int col, int row, Board bd) {
+    public static int randomStartValue() {
+        int[] startingTiles = {2, 2, 2, 2, 2, 2, 2, 2, 2, 4};
+        int valueIndex = ThreadLocalRandom.current().nextInt(0, 10);
+        return startingTiles[valueIndex];
+    }
+
+    public Tile(Canvas cv, int col, int row, int startingValue) {
         x = col;
         y = row;
 
-        int[] startingTiles = {2, 4};
-        int valueIndex = new Random().nextInt(startingTiles.length);
-        value = startingTiles[valueIndex];
+        value = startingValue;
 
         int[] canvasCoordArray = canvasCoords();
         int canvasX = canvasCoordArray[0];

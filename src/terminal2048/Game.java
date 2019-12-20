@@ -19,6 +19,7 @@ import java.util.logging.Level;
 
 import terminal2048.graphics.Canvas;
 import terminal2048.graphics.Image;
+import terminal2048.game.Board;
 
 
 public class Game {
