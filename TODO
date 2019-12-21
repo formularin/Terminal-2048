@@ -1,0 +1,6 @@
+render primitive game without keyboard inputs (10 random moves)
+check outputted board states to be correct (verify game logic)
+
+render big boy graphics
+
+add keypress detection
