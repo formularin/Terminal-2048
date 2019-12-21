@@ -1,6 +1,5 @@
 .DS_Store
 Test.java
-test
 **/*.class
 src/terminal2048/terminal-2048.log
 src/terminal-2048.log

@@ -24,7 +24,7 @@ public class Board {
 
     Tile[][] tiles = new Tile[4][4];  // tiles[row][column]
 
-    private static Tile[] mergeRow(Tile[] tileRow, String move, String typeRow, int coordRow, Canvas canvas) {
+    private static Tile[] mergeRow(Tile[] tileRow, String direction, String typeRow, int coordRow, Canvas canvas) {
         /*
         Takes array of tiles (representing a row or column)
         and returns what that row should look like after a
@@ -199,6 +199,16 @@ public class Board {
         return newTileRow;
     }
 
+    private static Tile[][] transposeTiles() {
+        Tile[][] columns = new Tile[4][4];
+        for ( int c = 0; c < 4; c++ ) {
+            for ( int r = 0; r < 4; r++ ) {
+                columns[c][r] = tiles[r][c]
+            }
+        }
+        return columns;
+    }
+
     public Board(Canvas canvas) throws FileNotFoundException {
 
         ArrayList<String> boardStringLines = new ArrayList<String>(0);
@@ -234,9 +244,35 @@ public class Board {
          - run mergeRow() on each row (or column).
          - add new tile
          - calculate where each tile has to go and move them all one place at a time each frame
+
+        `direction` can be "right", "left", "up" or "down"
         */
 
         // calculate new locations of every tile on board
-        
+        if (direction == "right") {
+            for ( int r = 0; r < 4; r++ ) {
+                tiles[r] = mergeRow(tiles[r], "forward", "horizontal", r, canvas);
+            }
+        } else if (direction == "left") {
+            for ( int r = 0; r < 4; r++ ) {
+                tiles[r] = mergeRow(tiles[r], "backward", "horizontal", r, canvas);
+            }
+        } else if (direction == "up" || direction == "down") {
+            Tile[][] transposedTiles = transposeTiles();
+            String directionParam;
+            if (direction == "up") {
+                directionParam = "forward";
+            } else if (direction == "down") {
+                directionParam = "backward";
+            }
+            for ( int c = 0; c < 4; c++ ) {
+                transposedTiles[c] = mergeRow(transposedTiles[c], directionParam, "vertical", c, canvas);
+            }
+            for ( int r = 0; r < 4; r++ ) {
+                for ( int c = 0; c < 4; c++ ) {
+                    tiles[r][c] = transposedTiles[c][r];
+                }
+            }
+        }
     }
 }
