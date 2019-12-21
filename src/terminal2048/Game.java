@@ -1,3 +1,8 @@
+/*
+If the x and y attributes of the Tile class are not used by the end of the game,
+remove them and edit all code (especially Board.mergeRow) accordingly.
+*/
+
 package terminal2048;
 
 import com.googlecode.lanterna.screen.Screen;

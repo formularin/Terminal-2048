@@ -274,5 +274,24 @@ public class Board {
                 }
             }
         }
+
+        // create new tile
+        int newTileX;
+        int newTileY;
+
+        ArrayList<int> newTilePotentialXs = new ArrayList<int>(0);
+        ArrayList<int> newTilePotentialYs = new ArrayList<int>(0);
+        for ( int r = 0; r < 4; r++ ) {
+            for ( int c = 0; c < 4; c++ ) {
+                if (tiles[r][c] == null) {
+                    newTilePotentialXs.add(c);
+                    newTIlePotentialYs.add(r);
+                }
+            }
+        }
+
+        newTileX = newTilePotentialXs.get(ThreadLocalRandom.current().nextInt(0, newTilePotentialXs.size()));
+        newTileY = newTilePotentialYs.get(ThreadLocalRandom.current().nextInt(0, newTilePotentialYs.size()));
+        tiles[newTileX][NewTileY] = new Tile(canvas, newTileX, newTileY, Tile.randomStartValue());
     }
 }
