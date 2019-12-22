@@ -1,6 +1,5 @@
-render primitive game without keyboard inputs (10 random moves)
-check outputted board states to be correct (verify game logic)
+fix game logic
 
-render big boy graphics
+render big boy graphics (lanterna)
 
 add keypress detection
