@@ -82,21 +82,15 @@ public class Game {
         // update virtual screen
         Canvas canvas = new Canvas(25, 70);
         Board board = new Board(canvas);
-        // printBoard(board);
-        // board.makeMove("right", stdscr, graphics);
-        // printBoard(board);
-        // board.makeMove("left", stdscr, graphics);
-        // printBoard(board);
-        // board.makeMove("up", stdscr, graphics);
-        // printBoard(board);
-        // board.makeMove("down", stdscr, graphics);
-        // printBoard(board);
-        Tile[] tileRow = new Tile[4];
-        tileRow[0] = new Tile(canvas, 0, 0, 2);
-        tileRow[1] = new Tile(canvas, 1, 0, 2);
-        tileRow[3] = new Tile(canvas, 3, 0, 2);
-        testMerge(tileRow, "forward", board);
-        testMerge(tileRow, "backward", board);
+        printBoard(board);
+        board.makeMove("right", stdscr, graphics);
+        printBoard(board);
+        board.makeMove("left", stdscr, graphics);
+        printBoard(board);
+        board.makeMove("up", stdscr, graphics);
+        printBoard(board);
+        board.makeMove("down", stdscr, graphics);
+        printBoard(board);
 
         // update real screen
         // stdscr.clear();

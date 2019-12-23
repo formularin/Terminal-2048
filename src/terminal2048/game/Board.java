@@ -149,8 +149,9 @@ public class Board {
         */
 
         Tile[] newTileRow = new Tile[4];
-
-        if (!containsNull(tileRow)) /* if all 4 are equal */ {
+        
+        // if all 4 are equal
+        if (!containsNull(tileRow)) {
             if (tileRow[0].value == tileRow[1].value && tileRow[0].value == tileRow[2].value && tileRow[0].value == tileRow[3].value) {
                 int newValue = tileRow[0].value * 2;
                 if (direction == "forward") {
@@ -170,42 +171,40 @@ public class Board {
                         newTileRow[0] = new Tile(canvas, coordRow, 0, newValue);
                     }
                 }
+                return newTileRow;
             }
-            return newTileRow;
         }
 
         // if 3 in a row are equal
         for ( int i = 0; i < 2; i++ ) {
             if (tileRow[i] != null) {
-                ArrayList<Tile> equalTiles = new ArrayList<Tile>(0);
-                int lastIndex = 0;
+                ArrayList<Integer> equalTiles = new ArrayList<Integer>(0);
                 for ( int j = 0; i + j < 4 && (tileRow[i + j] == null || tileRow[i].value == tileRow[i + j].value); j++ ) {
                     // current tile is either null or has the same value as the first tile
                     if (tileRow[i + j] != null) {
-                        equalTiles.add(tileRow[i + j]);
+                        equalTiles.add(i + j);
                     }
-                    lastIndex = i + j;
                 }
                 if (equalTiles.size() == 3) {
-                    newTileRow = threeInARow(lastIndex, tileRow, canvas, direction, typeRow, coordRow);
+                    newTileRow = threeInARow(equalTiles.get(2), tileRow, canvas, direction, typeRow, coordRow);
                     return newTileRow;
                 }
             }
         }
 
         // if 2 in a row are equal
-        for ( int t = 0; t < 3; t++ ) {
-            if (tileRow[t] != null && tileRow[t + 1] != null) {
-                if ( tileRow[t].value == tileRow[t + 1].value ) {
-                    try {
-                        if (tileRow[t + 2].value != tileRow[t].value) {
-                            newTileRow = twoInARow(t, t + 1, tileRow, direction, typeRow, canvas, coordRow);
-                            return newTileRow;
-                        }
-                    } catch (java.lang.ArrayIndexOutOfBoundsException | java.lang.NullPointerException e) {
-                        newTileRow = twoInARow(t, t + 1, tileRow, direction, typeRow, canvas, coordRow);
-                        return newTileRow;
+        for ( int i = 0; i < 3; i++ ) {
+            if (tileRow[i] != null) {
+                ArrayList<Integer> equalTiles = new ArrayList<Integer>(0);
+                for ( int j = 0; i + j < 4 && (tileRow[i + j] == null || tileRow[i].value == tileRow[i + j].value); j++ ) {
+                    // current tile is either null or has the same value as the first tile
+                    if (tileRow[i + j] != null) {
+                        equalTiles.add(i + j);
                     }
+                }
+                if (equalTiles.size() == 2) {
+                    newTileRow = twoInARow(equalTiles.get(0), equalTiles.get(1), tileRow, direction, typeRow, canvas, coordRow);
+                    return newTileRow;
                 }
             }
         }
