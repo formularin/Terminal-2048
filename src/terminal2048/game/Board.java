@@ -24,9 +24,9 @@ public class Board {
     Image image;
 
     public Tile[][] tiles = new Tile[4][4];  // tiles[row][column]
-    Canvas cv;
+    public Canvas cv;
 
-    private static Boolean containsNull(Tile[] row) {
+    public static Boolean containsNull(Tile[] row) {
         for ( Tile tile : row ) {
             if (tile == null) {
                 return true;
@@ -35,42 +35,40 @@ public class Board {
         return false;
     }
 
-    private static void noneInARowFunc(String direction, Tile[] newTileRow) {
+    public static Tile[] noneInARowFunc(String direction, Tile[] oldNewTileRow) {
+        Tile[] newTileRow = oldNewTileRow.clone();
         if (direction == "forward") {
-            for ( int i = 3; i > -1; i-- ) {
+            for ( int i = 3; i >= 0; i-- ) {
                 if (newTileRow[i] != null) {
-                    for ( int j = 0; (i + j < 4) && (newTileRow[i + j] != null); j++ ) {
+                    for ( int j = 1; (i + j < 4) && (newTileRow[i + j] == null); j++ ) {
                         // move tile over one spot
-                        newTileRow[i + j] = newTileRow[i + (j - 1)];
-                        newTileRow[i + (j - 1)] = null;
+                        newTileRow[i + j] = newTileRow[i + j - 1];
+                        newTileRow[i + j - 1] = null;
                     }
                 }
             }
         } else if (direction == "backward") {
             for ( int i = 0; i < 4; i++ ) {
                 if (newTileRow[i] != null) {
-                    for ( int j = 0; (newTileRow[i - j] != null) && (newTileRow[i - j].value > -1); j++ ) {
+                    for ( int j = 1; (i - j >= 0) && (newTileRow[i - j] == null); j++ ) {
                         // move tile backwards one spot
-                        newTileRow[i + j] = newTileRow[i + (j - 1)];
-                        newTileRow[i + (j - 1)] = null;
+                        newTileRow[i - j] = newTileRow[i - j + 1];
+                        newTileRow[i - j + 1] = null;
                     }
                 }
             }
         }
+        return newTileRow;
     }
 
-    private static void twoInARow(int tile1, int tile2, Tile[] newTileRow, Tile[] tileRow, String direction, String typeRow, Canvas canvas, int coordRow) {
+    public static Tile[] twoInARow(int tile1, int tile2, Tile[] tileRow, String direction, String typeRow, Canvas canvas, int coordRow) {
         /*
         tiles one and two are the indices of the equal tiles in the row
 
         tile2 has to be greater than tile1
         */
-        
-        // move all tiles to farthest to the left (or right if backwards) until hit by other tile
-        // above step done left to right when forwards, and right to left when backwards (in iterating over tiles)
-
         // remove equal tiles and replace left (or right if backwards) with new tile of double value
-        newTileRow = tileRow;
+        Tile[] newTileRow = tileRow.clone();
         int newValue = newTileRow[tile1].value * 2;
         if (direction == "forward") {
             newTileRow[tile1] = null;
@@ -87,11 +85,11 @@ public class Board {
                 newTileRow[tile1] = new Tile(canvas, coordRow, tile1, newValue);
             }
         }
-        noneInARowFunc(direction, newTileRow);
+        return noneInARowFunc(direction, newTileRow);
     }
 
-    private static void threeInARow(int firstIndex, Tile[] newTileRow, Tile[] tileRow, Canvas canvas, String direction, String typeRow, int coordRow) {
-        newTileRow = tileRow;
+    public static Tile[] threeInARow(int firstIndex, Tile[] tileRow, Canvas canvas, String direction, String typeRow, int coordRow) {
+        Tile[] newTileRow = tileRow.clone();
         int ogValue = newTileRow[firstIndex].value;
         int newValue = ogValue * 2;
         
@@ -114,10 +112,10 @@ public class Board {
                 newTileRow[firstIndex + 1] = new Tile(canvas, coordRow, firstIndex + 1, ogValue);
             }
         }
-        noneInARowFunc(direction, newTileRow);
+        return noneInARowFunc(direction, newTileRow);
     }
 
-    private static Tile[] mergeRow(Tile[] tileRow, String direction, String typeRow, int coordRow, Canvas canvas) {
+    public static Tile[] mergeRow(Tile[] tileRow, String direction, String typeRow, int coordRow, Canvas canvas) {
         /*
         Takes array of tiles (representing a row or column)
         and returns what that row should look like after a
@@ -132,36 +130,61 @@ public class Board {
 
         Tile[] newTileRow = new Tile[4];
 
-        // if all 4 are equal
-        if (!containsNull(tileRow)) /* check if full */ {
+        if (!containsNull(tileRow)) /* if all 4 are equal */ {
             if (tileRow[0].value == tileRow[1].value && tileRow[0].value == tileRow[2].value && tileRow[0].value == tileRow[3].value) {
                 int newValue = tileRow[0].value * 2;
-                int[] newXs = new int[2];
-                int[] newYs = new int[2];
-                
-                if (typeRow == "horizontal") {
-                    newYs[0] = coordRow;
-                    newYs[1] = coordRow;
-                    if (direction == "forward") {
-                        newXs[0] = 3;
-                        newXs[1] = 4;
-                    } else if (direction == "backward") {
-                        newXs[0] = 0;
-                        newXs[1] = 1;
+                if (direction == "forward") {
+                    if (typeRow == "horizontal") {
+                        newTileRow[2] = new Tile(canvas, 2, coordRow, newValue);
+                        newTileRow[3] = new Tile(canvas, 3, coordRow, newValue);
+                    } else if (typeRow == "vertical") {
+                        newTileRow[2] = new Tile(canvas, coordRow, 2, newValue);
+                        newTileRow[3] = new Tile(canvas, coordRow, 3, newValue);
                     }
-                } else if (typeRow == "vertical") /*EXPLICIT IS BETTER THAN IMPLICIT*/ {
-                    newXs[0] = coordRow;
-                    newXs[1] = coordRow;
-                    if (direction == "forward") {
-                        newYs[0] = 3;
-                        newYs[1] = 4;
-                    } else if (direction == "backward") {
-                        newYs[0] = 0;
-                        newYs[1] = 1;
+                } else if (direction == "backward") {
+                    if (typeRow == "horizontal") {
+                        newTileRow[1] = new Tile(canvas, 1, coordRow, newValue);
+                        newTileRow[0] = new Tile(canvas, 0, coordRow, newValue);
+                    } else if (typeRow == "vertical") {
+                        newTileRow[1] = new Tile(canvas, coordRow, 1, newValue);
+                        newTileRow[0] = new Tile(canvas, coordRow, 0, newValue);
                     }
                 }
-                newTileRow[3] = new Tile(canvas, newXs[0], newYs[0], newValue);
-                newTileRow[4] = new Tile(canvas, newXs[1], newYs[1], newValue);
+            }
+            return newTileRow;
+        }
+
+        // if 3 in a row are equal
+        for ( int t = 0; t < 2; t++ ) {
+            if (tileRow[t] != null && tileRow[t + 1] != null && tileRow[t + 2] != null) {
+                if (tileRow[t].value == tileRow[t + 1].value && tileRow[t].value == tileRow[t + 2].value) {
+                    try {
+                        if (tileRow[t + 3].value != tileRow[1].value) {
+                            newTileRow = threeInARow(t, tileRow, canvas, direction, typeRow, coordRow);
+                            return newTileRow;
+                        }
+                    } catch (java.lang.ArrayIndexOutOfBoundsException e) {
+                        newTileRow = threeInARow(t, tileRow, canvas, direction, typeRow, coordRow);
+                        return newTileRow;
+                    }
+                }
+            }
+        }
+
+        // if 2 in a row are equal
+        for ( int t = 0; t < 3; t++ ) {
+            if (tileRow[t] != null && tileRow[t + 1] != null) {
+                if ( tileRow[t].value == tileRow[t + 1].value ) {
+                    try {
+                        if (tileRow[t + 2].value != tileRow[t].value) {
+                            newTileRow = twoInARow(t, t + 1, tileRow, direction, typeRow, canvas, coordRow);
+                            return newTileRow;
+                        }
+                    } catch (java.lang.ArrayIndexOutOfBoundsException | java.lang.NullPointerException e) {
+                        newTileRow = twoInARow(t, t + 1, tileRow, direction, typeRow, canvas, coordRow);
+                        return newTileRow;
+                    }
+                }
             }
         }
 
@@ -172,45 +195,11 @@ public class Board {
                 if (tileRow[t].value == tileRow[t + 1].value) {
                     noneInARow = false;
                 }
-            } catch (NullPointerException e) {
-                if (tileRow[t] == tileRow[t + 1]) {
-                    noneInARow = false;
-                }
-            }
+            } catch (NullPointerException e) {}
         }
         if (noneInARow) {
-            newTileRow = tileRow;
-            noneInARowFunc(direction, newTileRow);
-        }
-
-        // if 2 in a row are equal
-        for ( int t = 0; t < 3; t++ ) {
-            if (tileRow[t] != null && tileRow[t + 1] != null) {
-                if ( tileRow[t].value == tileRow[t + 1].value ) {
-                    try {
-                        if (tileRow[t + 2].value != tileRow[t].value) {
-                            twoInARow(t, t + 1, newTileRow, tileRow, direction, typeRow, canvas, coordRow);
-                        }
-                    } catch (java.lang.ArrayIndexOutOfBoundsException e) {
-                        twoInARow(t, t + 1, newTileRow, tileRow, direction, typeRow, canvas, coordRow);
-                    }
-                }
-            }
-        }
-
-        // if 3 in a row are equal
-        for ( int t = 0; t < 2; t++ ) {
-            if (tileRow[t] != null && tileRow[t + 1] != null && tileRow[t + 2] != null) {
-                if (tileRow[t].value == tileRow[t + 1].value && tileRow[t].value == tileRow[t + 2].value) {
-                    try {
-                        if (tileRow[t + 3].value != tileRow[1].value) {
-                            threeInARow(t, newTileRow, tileRow, canvas, direction, typeRow, coordRow);
-                        }
-                    } catch (java.lang.ArrayIndexOutOfBoundsException e) {
-                        threeInARow(t, newTileRow, tileRow, canvas, direction, typeRow, coordRow);
-                    }
-                }
-            }
+            newTileRow = noneInARowFunc(direction, tileRow);
+            return newTileRow;
         }
 
         return newTileRow;
@@ -267,9 +256,9 @@ public class Board {
         */
         String directionParam;
         if (direction == "up") {
-            directionParam = "forward";
-        } else {
             directionParam = "backward";
+        } else {
+            directionParam = "forward";
         }
 
         // calculate new locations of every tile on board

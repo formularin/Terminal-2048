@@ -21,6 +21,7 @@ import java.lang.NullPointerException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.Arrays;
 
 import terminal2048.graphics.Canvas;
 import terminal2048.graphics.Image;
@@ -43,6 +44,27 @@ public class Game {
             System.out.println();
         }
         System.out.println();
+    }
+
+    private static String tileRowToValues(Tile[] tileRow) {
+        int[] tileRowValues = new int[4];
+        for ( int i = 0; i < 4; i++ ) {
+            if (tileRow[i] != null) {
+                tileRowValues[i] = tileRow[i].value;
+            }
+        }
+        return Arrays.toString(tileRowValues);
+    }
+
+    private static void testMerge(Tile[] tileRow, String direction, Board board) {
+        Tile[] newTileRow = board.mergeRow(tileRow, direction, "horizontal", 0, board.cv);
+        String opString = "";
+        if (direction == "forward") {
+            opString = tileRowToValues(tileRow) + " -> " + tileRowToValues(newTileRow);
+        } else if (direction == "backward") {
+            opString = tileRowToValues(tileRow) + " <- " + tileRowToValues(newTileRow);
+        }
+        System.out.println(opString);
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -68,7 +90,8 @@ public class Game {
         board.makeMove("up", stdscr, graphics);
         printBoard(board);
         board.makeMove("down", stdscr, graphics);
-        
+        printBoard(board);
+
         // update real screen
         // stdscr.clear();
         // String[] canvas_rows = canvas.get_rows();
