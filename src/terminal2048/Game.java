@@ -10,62 +10,17 @@ import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.graphics.TextGraphics;
-import com.googlecode.lanterna.graphics.BasicTextImage;
-import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.TextCharacter;
-import com.googlecode.lanterna.screen.VirtualScreen.FrameRenderer;
 
 import java.io.IOException;
-import java.lang.NullPointerException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.Level;
-import java.util.Arrays;
 
-import terminal2048.graphics.Canvas;
-import terminal2048.graphics.Image;
-import terminal2048.game.Board;
-import terminal2048.game.Tile;
+import terminal2048.Board;
 
 
 public class Game {
-
-    private static void printBoard(Board board) {
-        for ( Tile[] row : board.tiles ) {
-            for ( Tile tile : row ) {
-                try {
-                    System.out.print(tile.value);   
-                } catch (NullPointerException e) {
-                    System.out.print(".");
-                }
-                System.out.print("\t");
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
-
-    private static String tileRowToValues(Tile[] tileRow) {
-        int[] tileRowValues = new int[4];
-        for ( int i = 0; i < 4; i++ ) {
-            if (tileRow[i] != null) {
-                tileRowValues[i] = tileRow[i].value;
-            }
-        }
-        return Arrays.toString(tileRowValues);
-    }
-
-    private static void testMerge(Tile[] tileRow, String direction, Board board) {
-        Tile[] newTileRow = board.mergeRow(tileRow, direction, "horizontal", 0, board.cv);
-        String opString = "";
-        if (direction == "forward") {
-            opString = tileRowToValues(tileRow) + " -> " + tileRowToValues(newTileRow);
-        } else if (direction == "backward") {
-            opString = tileRowToValues(tileRow) + " <- " + tileRowToValues(newTileRow);
-        }
-        System.out.println(opString);
-    }
 
     public static void main(String[] args) throws IOException, InterruptedException {
         // create small animation to test graphics capabilities
@@ -80,28 +35,29 @@ public class Game {
         TextGraphics graphics = stdscr.newTextGraphics();
 
         // update virtual screen
-        Canvas canvas = new Canvas(25, 70);
-        Board board = new Board(canvas);
-        printBoard(board);
+        Board board = new Board();
+        System.out.println(board.display());
         board.makeMove("right", stdscr, graphics);
-        printBoard(board);
+        System.out.println(board.display());
         board.makeMove("left", stdscr, graphics);
-        printBoard(board);
+        System.out.println(board.display());
         board.makeMove("up", stdscr, graphics);
-        printBoard(board);
+        System.out.println(board.display());
         board.makeMove("down", stdscr, graphics);
-        printBoard(board);
+        System.out.println(board.display());
+
 
         // update real screen
-        // stdscr.clear();
-        // String[] canvas_rows = canvas.get_rows();
-        // for ( int i = 0; i < canvas.grid.length; i++) {
-        //     graphics.putString(new TerminalPosition(0, i), canvas_rows[i]);
+        // while (true) {
+        //     stdscr.clear();
+        //     String[] canvas_rows = canvas.get_rows();
+        //     for ( int i = 0; i < canvas.grid.length; i++) {
+        //         graphics.putString(new TerminalPosition(0, i), canvas_rows[i]);
+        //     }
+        //     stdscr.refresh();
+
+        //     Thread.sleep(100);
         // }
-        // stdscr.refresh();
-
-        // Thread.sleep(100);
-
         // stdscr.close();
     }
 
