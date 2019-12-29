@@ -1,5 +1,3 @@
 fix game logic error with generating original tiles (the problem is that sometimes the coords of each of the starting points are equal)
 
 switch to lanterna and make game playable
-
-create big boy graphics (this will take a long time because the current game logic simply creates new tiles)
